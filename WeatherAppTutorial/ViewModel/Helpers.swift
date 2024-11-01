@@ -60,3 +60,32 @@ import Foundation
             .formatted(.dateTime.weekday(.abbreviated))
     }
 
+// 2024-03-19 00:00
+func getShortTime(time: String) -> String {
+    var meridiem = "AM"
+    var displayTime = 1
+
+    let militaryTime = time.suffix(5)
+    let currentTime = militaryTime.prefix(2)
+
+    if currentTime == "00" || currentTime == "12" {
+        displayTime = 12
+        if currentTime == "00" {
+            meridiem = "AM"
+        } else {
+            meridiem = "PM"
+        }
+    } else {
+        if let intTime = Int(currentTime) {
+            if intTime >= 13 {
+                displayTime = intTime - 12
+                meridiem = "PM"
+            } else {
+                displayTime = intTime
+                meridiem = "AM"
+            }
+        }
+    }
+    return "\(displayTime)\(meridiem)"
+}
+    

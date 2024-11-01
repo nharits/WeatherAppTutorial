@@ -11,6 +11,7 @@ import Alamofire
 struct WeatherView: View {
     
     @State private var results = [ForecastDay]()
+    @State var hourlyForecast = [Hour]()
     
     @State var backgroundColor = Color.init(red: 135/255, green: 206/255, blue: 235/255)
     @State var weatherEmoji = "☀️"
@@ -41,29 +42,75 @@ struct WeatherView: View {
                     .font(.system(size: 35))
                     .foregroundStyle(.white)
                     .bold()
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
+                    .padding(.bottom, 1)
                 Text("\(Date().formatted(date: .complete, time: .omitted))")
+                    .font(.system(size: 16))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
+                Text(weatherEmoji)
+                    .font(.system(size: 110))
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
+                Text("\(currentTemp)°C")
+                    .font(.system(size: 50))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
+                Text(conditionText)
                     .font(.system(size: 18))
                     .foregroundStyle(.white)
-                Text(weatherEmoji)
-                    .font(.system(size: 180))
-                    .shadow(radius: 75)
-                Text("\(currentTemp)°C")
-                    .font(.system(size: 70))
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
+                Spacer()
+                Spacer()
+                Spacer()
+                
+                Text("Hourly Forecast")
+                    .font(.system(size: 17))
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
                     .bold()
-                Text(conditionText)
+                    .padding(.top,12)
+                
+                ScrollView(.horizontal,showsIndicators: false ) {
+                    HStack{
+                        ForEach(hourlyForecast) { forecast in
+                            VStack {
+                                Text("\(getShortTime(time: forecast.time))")
+                                    .shadow(color: .black.opacity(0.2),
+                                             radius: 1, x: 0, y: 2)
+                                Text("\(getWeatherEmoji(code: forecast.condition.code))")
+                                    .shadow(color: .black.opacity(0.2),
+                                             radius: 1, x: 0, y: 2)
+                                Text("\(Int(forecast.temp_c))°C")
+                            }
+                            .frame(width: 50, height: 90)
+                        }
+                        Spacer()
+                    }
+                    .background(Color.white.blur(radius: 75).opacity(15))
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                }
+                .padding(.top,.zero)
+                .padding(.leading, 18)
+                .padding(.trailing, 18)
+                
+                Text("3 Day Forecast")
                     .font(.system(size: 22))
                     .foregroundStyle(.white)
                     .bold()
-                Spacer()
-                Spacer()
-                Spacer()
+                
                 List(results) { forecast in
                     HStack(alignment: .center, spacing: nil) {
                         Text("\(getShortDate(epoch: forecast.date_epoch))")
                             .frame(maxWidth: 50, alignment: .leading)
                             .bold()
-                        Text("\(getWeatherEmoji(code: forecast.day.condition.code))").frame(maxWidth: 30, alignment: .leading)
+                        Text("\(getWeatherEmoji(code: forecast.day.condition.code))")
+                            .frame(maxWidth: 30, alignment: .leading)
                         Text("\(Int(forecast.day.avgtemp_c))°C")
                             .frame(maxWidth: 50, alignment: .leading)
                         Spacer()
@@ -80,65 +127,12 @@ struct WeatherView: View {
                 Text("Data supplied by Weather API")
                     .font(.system(size: 14))
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.2),
+                            radius: 1, x: 0, y: 2)
             }
             .background(backgroundColor)
             .frame(width: .infinity, height: .infinity, alignment: .topLeading)
-            .task {
-                await fetchWeather()
-            }
         }
-        
-//        VStack{
-//            Spacer()
-//            Text(cityName)
-//                .font(.system(size: 35))
-//                .foregroundStyle(.white)
-//                .bold()
-//            Text("\(Date().formatted(date: .complete, time: .omitted))")
-//                .font(.system(size: 18))
-//                .foregroundStyle(.white)
-//            Text(weatherEmoji)
-//                .font(.system(size: 180))
-//                .shadow(radius: 75)
-//            Text("\(currentTemp)°C")
-//                .font(.system(size: 70))
-//                .foregroundStyle(.white)
-//                .bold()
-//            Text(conditionText)
-//                .font(.system(size: 22))
-//                .foregroundStyle(.white)
-//                .bold()
-//            Spacer()
-//            Spacer()
-//            Spacer()
-//            List(results) { forecast in
-//                HStack(alignment: .center, spacing: nil) {
-//                    Text("\(getShortDate(epoch: forecast.date_epoch))")
-//                        .frame(maxWidth: 50, alignment: .leading)
-//                        .bold()
-//                    Text("\(getWeatherEmoji(code: forecast.day.condition.code))").frame(maxWidth: 30, alignment: .leading)
-//                    Text("\(Int(forecast.day.avgtemp_c))°C")
-//                        .frame(maxWidth: 50, alignment: .leading)
-//                    Spacer()
-//                    Text("\(forecast.day.condition.text)")
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                }
-//                .listRowBackground(Color.white.blur(radius: 75).opacity(0.5))
-//                //.listRowSeparator(.hidden)
-//            }
-//            .contentMargins(.vertical,0)
-//            .scrollContentBackground(.hidden)
-//            .preferredColorScheme(.dark)
-//            Spacer()
-//            Text("Data supplied by Weather API")
-//                .font(.system(size: 14))
-//                .foregroundStyle(.white)
-//        }
-//        .background(backgroundColor)
-//        .frame(width: .infinity, height: .infinity, alignment: .topLeading)
-//        .task {
-//            await fetchWeather()
-//        }
     }
 }
 
@@ -156,10 +150,18 @@ extension WeatherView {
             case .success(let weather) :
                 cityName = weather.location.name
                 results = weather.forecast.forecastday
-                currentTemp = Int(results[0].day.avgtemp_c)
-                backgroundColor = getBackgroundColor(code: results[0].day.condition.code)
-                weatherEmoji = getWeatherEmoji(code: results[0].day.condition.code)
-                conditionText = results[0].day.condition.text
+                
+                // if date1 in fetched data != date now, set index to 1
+                var index = 0
+                if Date(timeIntervalSince1970: TimeInterval(results[0].date_epoch)).formatted(Date.FormatStyle().weekday(.abbreviated)) != Date().formatted(Date.FormatStyle().weekday(.abbreviated)) {
+                    index = 1
+                }
+                
+                currentTemp = Int(results[index].day.avgtemp_c)
+                hourlyForecast = results[index].hour
+                backgroundColor = getBackgroundColor(code: results[index].day.condition.code)
+                weatherEmoji = getWeatherEmoji(code: results[index].day.condition.code)
+                conditionText = results[index].day.condition.text
                 loading = false
             case .failure(let error):
                 print(error.localizedDescription)
