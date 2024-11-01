@@ -5,7 +5,7 @@
 //  Created by haritS on 30/10/2567 BE.
 //
 
-import Foundation
+import SwiftUI
 
 struct Weather: Codable {
     //
@@ -34,4 +34,5 @@ struct Day: Codable {
 
 struct Condition: Codable {
     var text: String
+    var code: Int
 }
