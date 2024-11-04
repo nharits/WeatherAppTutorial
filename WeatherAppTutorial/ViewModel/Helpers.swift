@@ -40,7 +40,7 @@ import Foundation
     }
 
     func getBackgroundColor(code: Int) -> Color {
-        let blueSky = Color.init(red: 135/255, green: 206/255, blue: 235/255)
+        let blueSky = Color.init(red: 0/255, green: 114/255, blue: 160/255)
         let greySky = Color.init(red: 47/255, green: 79/255, blue: 79/255)
         
         var backgroundColor = greySky

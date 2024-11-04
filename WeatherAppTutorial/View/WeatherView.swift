@@ -12,6 +12,9 @@ struct WeatherView: View {
     
     @State private var results = [ForecastDay]()
     @State var hourlyForecast = [Hour]()
+    @State var query: String = ""
+    @State var contentSize: CGSize = .zero
+    @State var textFieldHeight = 15.0
     
     @State var backgroundColor = Color.init(red: 135/255, green: 206/255, blue: 235/255)
     @State var weatherEmoji = "☀️"
@@ -32,12 +35,40 @@ struct WeatherView: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .task {
-                    await fetchWeather()
+                        await fetchWeather(query: "")
                 }
             }
         } else {
             VStack{
                 Spacer()
+                //track height of textfield according to keyboard
+                TextField("Enter the city name", text: $query,onEditingChanged: getFocus)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .background(
+                        Rectangle()
+                            .foregroundStyle(.white.opacity(0.2))
+                            .cornerRadius(25)
+                            .frame(height: 50)
+                    )
+                    .padding(.leading,40)
+                    .padding(.trailing,40)
+                    .padding(.bottom,15)
+                    .padding(.top, textFieldHeight)
+                    .multilineTextAlignment(.center)
+                    .tint(.white)
+                    .font(Font.system(size: 20, design: .default))
+                    .onSubmit {
+                        Task {
+                            await fetchWeather(query: query)
+                            print("text is summited")
+                        }
+                        withAnimation {
+                            textFieldHeight = 15
+                            print("reduce textfieldheight")
+                        }
+                    }
+                    
+                
                 Text(cityName)
                     .font(.system(size: 35))
                     .foregroundStyle(.white)
@@ -142,8 +173,21 @@ struct WeatherView: View {
 
 extension WeatherView {
     
-    func fetchWeather() async {
-        let request = AF.request("http://api.weatherapi.com/v1/forecast.json?key=6c9f65c397a04f7b88b113731242910&q=London&days=3&aqi=no&alerts=no")
+    func getFocus(focused: Bool) {
+        withAnimation {
+            textFieldHeight = 130
+        }
+    }
+    
+    func fetchWeather(query: String) async {
+        var queryText = query
+        if (queryText == "") {
+            queryText = "http://api.weatherapi.com/v1/forecast.json?key=6c9f65c397a04f7b88b113731242910&q=Bangkok&days=3&aqi=no&alerts=no"
+        } else {
+            queryText = "http://api.weatherapi.com/v1/forecast.json?key=6c9f65c397a04f7b88b113731242910&q=\(query)&days=3&aqi=no&alerts=no"
+        }
+        
+        let request = AF.request(queryText)
         request.responseDecodable(of: Weather.self) { response in
             //handler
             switch response.result {
