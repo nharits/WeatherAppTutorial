@@ -39,130 +39,142 @@ struct WeatherView: View {
                 }
             }
         } else {
-            VStack{
-                Spacer()
-                //track height of textfield according to keyboard
-                TextField("Enter the city name", text: $query,onEditingChanged: getFocus)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .background(
-                        Rectangle()
-                            .foregroundStyle(.white.opacity(0.2))
-                            .cornerRadius(25)
-                            .frame(height: 50)
-                    )
-                    .padding(.leading,40)
-                    .padding(.trailing,40)
-                    .padding(.bottom,15)
-                    .padding(.top, textFieldHeight)
-                    .multilineTextAlignment(.center)
-                    .tint(.white)
-                    .font(Font.system(size: 20, design: .default))
-                    .onSubmit {
-                        Task {
-                            await fetchWeather(query: query)
-                            print("text is summited")
-                        }
-                        withAnimation {
-                            textFieldHeight = 15
-                            print("reduce textfieldheight")
-                        }
-                    }
-                    
-                
-                Text(cityName)
-                    .font(.system(size: 35))
-                    .foregroundStyle(.white)
-                    .bold()
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                    .padding(.bottom, 1)
-                Text("\(Date().formatted(date: .complete, time: .omitted))")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                Text(weatherEmoji)
-                    .font(.system(size: 110))
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                Text("\(currentTemp)°C")
-                    .font(.system(size: 50))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                Text(conditionText)
-                    .font(.system(size: 18))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                Spacer()
-                Spacer()
-                Spacer()
-                
-                Text("Hourly Forecast")
-                    .font(.system(size: 17))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
-                    .bold()
-                    .padding(.top,12)
-                
-                ScrollView(.horizontal,showsIndicators: false ) {
-                    HStack{
-                        ForEach(hourlyForecast) { forecast in
-                            VStack {
-                                Text("\(getShortTime(time: forecast.time))")
-                                    .shadow(color: .black.opacity(0.2),
-                                             radius: 1, x: 0, y: 2)
-                                Text("\(getWeatherEmoji(code: forecast.condition.code))")
-                                    .shadow(color: .black.opacity(0.2),
-                                             radius: 1, x: 0, y: 2)
-                                Text("\(Int(forecast.temp_c))°C")
+            NavigationView {
+                VStack{
+                    Spacer()
+                    //track height of textfield according to keyboard
+                    TextField("Enter the city name", text: $query,onEditingChanged: getFocus)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .background(
+                            Rectangle()
+                                .foregroundStyle(.white.opacity(0.2))
+                                .cornerRadius(25)
+                                .frame(height: 50)
+                        )
+                        .padding(.leading,40)
+                        .padding(.trailing,40)
+                        .padding(.bottom,15)
+                        .padding(.top, textFieldHeight)
+                        .multilineTextAlignment(.center)
+                        .tint(.white)
+                        .font(Font.system(size: 20, design: .default))
+                        .onSubmit {
+                            Task {
+                                await fetchWeather(query: query)
+                                print("text is summited")
                             }
-                            .frame(width: 50, height: 90)
+                            withAnimation {
+                                textFieldHeight = 15
+                                print("reduce textfieldheight")
+                            }
                         }
-                        Spacer()
+                        
+                    
+                    Text(cityName)
+                        .font(.system(size: 35))
+                        .foregroundStyle(.white)
+                        .bold()
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                        .padding(.bottom, 1)
+                    Text("\(Date().formatted(date: .complete, time: .omitted))")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                    Text(weatherEmoji)
+                        .font(.system(size: 110))
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                    Text("\(currentTemp)°C")
+                        .font(.system(size: 50))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                    Text(conditionText)
+                        .font(.system(size: 18))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    
+                    Text("Hourly Forecast")
+                        .font(.system(size: 17))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
+                        .bold()
+                        //.padding(.top,12)
+                    
+                    ScrollView(.horizontal,showsIndicators: false ) {
+                        HStack{
+                            ForEach(hourlyForecast) { forecast in
+                                VStack {
+                                    Text("\(getShortTime(time: forecast.time))")
+                                        .shadow(color: .black.opacity(0.2),
+                                                 radius: 1, x: 0, y: 2)
+                                    Text("\(getWeatherEmoji(code: forecast.condition.code))")
+                                        .shadow(color: .black.opacity(0.2),
+                                                 radius: 1, x: 0, y: 2)
+                                    Text("\(Int(forecast.temp_c))°C")
+                                }
+                                .frame(width: 50, height: 90)
+                            }
+                            Spacer()
+                        }
+                        .background(Color.white.blur(radius: 75).opacity(15))
+                        .clipShape(RoundedRectangle(cornerRadius: 15))
                     }
-                    .background(Color.white.blur(radius: 75).opacity(15))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                }
-                .padding(.top,.zero)
-                .padding(.leading, 18)
-                .padding(.trailing, 18)
-                
-                Text("3 Day Forecast")
-                    .font(.system(size: 22))
-                    .foregroundStyle(.white)
-                    .bold()
-                
-                List(results) { forecast in
-                    HStack(alignment: .center, spacing: nil) {
-                        Text("\(getShortDate(epoch: forecast.date_epoch))")
-                            .frame(maxWidth: 50, alignment: .leading)
-                            .bold()
-                        Text("\(getWeatherEmoji(code: forecast.day.condition.code))")
-                            .frame(maxWidth: 30, alignment: .leading)
-                        Text("\(Int(forecast.day.avgtemp_c))°C")
-                            .frame(maxWidth: 50, alignment: .leading)
-                        Spacer()
-                        Text("\(forecast.day.condition.text)")
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top,.zero)
+                    .padding(.leading, 18)
+                    .padding(.trailing, 18)
+                    
+                    Text("3 Day Forecast")
+                        .font(.system(size: 17))
+                        .foregroundStyle(.white)
+                        .bold()
+                        .shadow(color: .black.opacity(0.2),
+                                 radius: 1, x: 0, y: 2)
+                        .padding(.top,12)
+                    
+                    List(results) { forecast in
+                        NavigationLink {
+                            WeatherDetails(results: $results, cityName: $cityName, index: 0)
+                        } label: {
+                            HStack(alignment: .center, spacing: nil) {
+                                Text("\(getShortDate(epoch: forecast.date_epoch))")
+                                    .frame(maxWidth: 50, alignment: .leading)
+                                    .bold()
+                                Text("\(getWeatherEmoji(code: forecast.day.condition.code))")
+                                    .frame(maxWidth: 30, alignment: .leading)
+                                Text("\(Int(forecast.day.avgtemp_c))°C")
+                                    .frame(maxWidth: 50, alignment: .leading)
+                                Spacer()
+                                Text("\(forecast.day.condition.text)")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
+                        .listRowBackground(Color.white.blur(radius: 75).opacity(0.5))
+                        //.listRowSeparator(.hidden)
+                        
                     }
-                    .listRowBackground(Color.white.blur(radius: 75).opacity(0.5))
-                    //.listRowSeparator(.hidden)
+                    .contentMargins(.vertical,0)
+                    .scrollContentBackground(.hidden)
+                    .preferredColorScheme(.dark)
+                    
+                    Spacer()
+                    
+                    Text("Data supplied by Weather API")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2),
+                                radius: 1, x: 0, y: 2)
                 }
-                .contentMargins(.vertical,0)
-                .scrollContentBackground(.hidden)
-                .preferredColorScheme(.dark)
-                Spacer()
-                Text("Data supplied by Weather API")
-                    .font(.system(size: 14))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 1, x: 0, y: 2)
+                .background(backgroundColor)
+                .frame(width: .infinity, height: .infinity, alignment: .topLeading)
             }
-            .background(backgroundColor)
-            .frame(width: .infinity, height: .infinity, alignment: .topLeading)
         }
     }
 }
