@@ -36,7 +36,7 @@ struct WeatherView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .task {
                         await fetchWeather(query: "")
-                }
+                    }
             }
         } else {
             NavigationView {
@@ -68,7 +68,7 @@ struct WeatherView: View {
                                 print("reduce textfieldheight")
                             }
                         }
-                        
+                    
                     
                     Text(cityName)
                         .font(.system(size: 35))
@@ -106,7 +106,7 @@ struct WeatherView: View {
                         .shadow(color: .black.opacity(0.2),
                                 radius: 1, x: 0, y: 2)
                         .bold()
-                        //.padding(.top,12)
+                    //.padding(.top,12)
                     
                     ScrollView(.horizontal,showsIndicators: false ) {
                         HStack{
@@ -114,10 +114,10 @@ struct WeatherView: View {
                                 VStack {
                                     Text("\(getShortTime(time: forecast.time))")
                                         .shadow(color: .black.opacity(0.2),
-                                                 radius: 1, x: 0, y: 2)
+                                                radius: 1, x: 0, y: 2)
                                     Text("\(getWeatherEmoji(code: forecast.condition.code))")
                                         .shadow(color: .black.opacity(0.2),
-                                                 radius: 1, x: 0, y: 2)
+                                                radius: 1, x: 0, y: 2)
                                     Text("\(Int(forecast.temp_c))°C")
                                 }
                                 .frame(width: 50, height: 90)
@@ -136,27 +136,38 @@ struct WeatherView: View {
                         .foregroundStyle(.white)
                         .bold()
                         .shadow(color: .black.opacity(0.2),
-                                 radius: 1, x: 0, y: 2)
+                                radius: 1, x: 0, y: 2)
                         .padding(.top,12)
                     
-                    List(results) { forecast in
-                        NavigationLink {
-                            WeatherDetails(results: $results, cityName: $cityName, index: 0)
-                        } label: {
-                            HStack(alignment: .center, spacing: nil) {
-                                Text("\(getShortDate(epoch: forecast.date_epoch))")
-                                    .frame(maxWidth: 50, alignment: .leading)
-                                    .bold()
-                                Text("\(getWeatherEmoji(code: forecast.day.condition.code))")
-                                    .frame(maxWidth: 30, alignment: .leading)
-                                Text("\(Int(forecast.day.avgtemp_c))°C")
-                                    .frame(maxWidth: 50, alignment: .leading)
-                                Spacer()
-                                Text("\(forecast.day.condition.text)")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                    List {
+                        ForEach(Array(results.enumerated()),
+                                id: \.1.id) { index, forecast in
+                            NavigationLink {
+                                WeatherDetails(results: $results, cityName: $cityName, index: index)
+                            } label: {
+                                HStack(alignment: .center, spacing: nil) {
+                                    Text("\(getShortDate(epoch: forecast.date_epoch))")
+                                        .frame(maxWidth: 50, alignment: .leading)
+                                        .bold()
+                                        .shadow(color: .black.opacity(0.2),
+                                                radius: 1, x: 0, y: 2)
+                                    Text("\(getWeatherEmoji(code: forecast.day.condition.code))")
+                                        .frame(maxWidth: 30, alignment: .leading)
+                                        .shadow(color: .black.opacity(0.2),
+                                                radius: 1, x: 0, y: 2)
+                                    Text("\(Int(forecast.day.avgtemp_c))°C")
+                                        .frame(maxWidth: 50, alignment: .leading)
+                                        .shadow(color: .black.opacity(0.2),
+                                                radius: 1, x: 0, y: 2)
+                                    Spacer()
+                                    Text("\(forecast.day.condition.text)")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .shadow(color: .black.opacity(0.2),
+                                                radius: 1, x: 0, y: 2)
+                                }
                             }
                         }
-                        .listRowBackground(Color.white.blur(radius: 75).opacity(0.5))
+                                .listRowBackground(Color.white.blur(radius: 75).opacity(0.5))
                         //.listRowSeparator(.hidden)
                         
                     }
@@ -224,6 +235,6 @@ extension WeatherView {
             }
         }
     }
-   
+    
     
 }//end
