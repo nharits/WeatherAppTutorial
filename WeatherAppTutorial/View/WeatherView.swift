@@ -184,8 +184,9 @@ struct WeatherView: View {
                                 radius: 1, x: 0, y: 2)
                 }
                 .background(backgroundColor)
-                .frame(width: .infinity, height: .infinity, alignment: .topLeading)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
+            .accentColor(.white)
         }
     }
 }
