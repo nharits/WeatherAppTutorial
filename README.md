@@ -1,2 +1,2 @@
 # WeatherAppTutorial
-WeatherAppTutorial by SwiftUI
+WeatherAppTutorial by SwiftUI, Alamofire, API fetching
